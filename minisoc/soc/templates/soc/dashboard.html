@@ -1,0 +1,41 @@
+{% extends "soc/base.html" %}
+{% block content %}
+<h1>Sicherheitsübersicht</h1>
+<p class="lead">Events werden gesammelt, durch Regeln korreliert und als Alerts angezeigt.</p>
+<ul class="summary">
+  <li><b class="{% if alerts %}bad{% else %}ok{% endif %}">{{ alerts|length }}</b>offene Alerts</li>
+  <li><b class="{% if noncompliant %}bad{% else %}ok{% endif %}">{{ noncompliant }}</b>von {{ endpoints|length }} Endpoints nicht konform</li>
+  <li><b>{{ events_24h }}</b>Events in 24 Stunden</li>
+</ul>
+
+<h2>Offene Alerts</h2>
+<div class="table-wrap"><table>
+  <tr><th>Zeit</th><th>Regel</th><th>Details</th><th></th></tr>
+  {% for a in alerts %}
+  <tr class="sev-{{ a.severity }}">
+    <td>{{ a.created_at|date:"d.m.Y H:i" }}</td><td>{{ a.rule }}</td><td>{{ a.details }}</td>
+    <td>{% if perms.soc.change_alert %}<form method="post" action="{% url 'ack_alert' a.pk %}">{% csrf_token %}
+      <button type="submit">Als bearbeitet markieren</button></form>{% endif %}</td>
+  </tr>
+  {% empty %}<tr><td colspan="4">Keine offenen Alerts.</td></tr>{% endfor %}
+</table></div>
+
+<h2>Endpoints</h2>
+<div class="table-wrap"><table>
+  <tr><th>Host</th><th>System</th><th>Status</th><th>Auffälligkeiten</th></tr>
+  {% for e in endpoints %}
+  <tr><td>{{ e.hostname }}</td><td>{{ e.os }}</td>
+      <td class="{% if e.compliant %}ok{% else %}bad{% endif %}">{% if e.compliant %}Konform{% else %}Nicht konform{% endif %}</td>
+      <td>{{ e.issues|join:", " }}</td></tr>
+  {% empty %}<tr><td colspan="4">Noch keine Endpoints. Lege welche im Admin an oder führe <code>seed_demo</code> aus.</td></tr>{% endfor %}
+</table></div>
+
+<h2>Letzte Events</h2>
+<div class="table-wrap"><table>
+  <tr><th>Zeit</th><th>Ereignis</th><th>Benutzer</th><th>IP</th></tr>
+  {% for e in events %}
+  <tr><td>{{ e.created_at|date:"d.m.Y H:i:s" }}</td><td>{{ e.get_event_type_display }}</td>
+      <td>{{ e.username }}</td><td>{{ e.ip|default:"–" }}</td></tr>
+  {% empty %}<tr><td colspan="4">Noch keine Events.</td></tr>{% endfor %}
+</table></div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "soc/base.html" %}
+{% block title %}Anmelden – MiniSOC{% endblock %}
+{% block content %}
+<div class="panel">
+  <h1>Anmelden</h1>
+  <form method="post">{% csrf_token %}
+    {% if form.errors %}<p class="error">Benutzername oder Passwort stimmt nicht.</p>{% endif %}
+    <label for="id_username">Benutzername</label>
+    <input type="text" name="username" id="id_username" autocomplete="username" autofocus required>
+    <label for="id_password">Passwort</label>
+    <input type="password" name="password" id="id_password" autocomplete="current-password" required>
+    <button type="submit">Anmelden</button>
+  </form>
+</div>
+{% endblock %}

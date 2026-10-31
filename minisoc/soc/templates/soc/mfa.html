@@ -1,0 +1,22 @@
+{% extends "soc/base.html" %}
+{% block title %}Zwei-Faktor-Anmeldung – MiniSOC{% endblock %}
+{% block content %}
+<div class="panel">
+  {% if qr %}
+    <h1>Zwei-Faktor-Anmeldung einrichten</h1>
+    <p>Scanne den QR-Code mit einer Authenticator-App und gib danach den 6-stelligen Code ein.</p>
+    <img src="{{ qr }}" alt="QR-Code für die Authenticator-App" width="200" height="200">
+    <p>Oder gib den Schlüssel von Hand ein: <code>{{ secret }}</code></p>
+  {% else %}
+    <h1>Code bestätigen</h1>
+    <p>Gib den 6-stelligen Code aus deiner Authenticator-App ein.</p>
+  {% endif %}
+  <form method="post">{% csrf_token %}
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    <label for="code">Code</label>
+    <input type="text" name="code" id="code" inputmode="numeric" pattern="[0-9]{6}" maxlength="6"
+           autocomplete="one-time-code" autofocus required>
+    <button type="submit">Bestätigen</button>
+  </form>
+</div>
+{% endblock %}

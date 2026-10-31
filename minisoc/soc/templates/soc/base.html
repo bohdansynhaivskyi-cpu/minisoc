@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}MiniSOC{% endblock %}</title>
+<style>
+  :root { --ink:#17212b; --muted:#5d6b7a; --paper:#f3f5f7; --line:#d9dfe5; --bar:#1d3144;
+          --ok:#2b7a4b; --warn:#b4690e; --bad:#b3261e; --accent:#1f5f8b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--paper); color:var(--ink); line-height:1.5;
+         font:16px/1.5 "Segoe UI", "Helvetica Neue", Arial, sans-serif; }
+  header { background:var(--bar); color:#fff; padding:.75rem 1.25rem; display:flex;
+           justify-content:space-between; align-items:center; gap:1rem; }
+  header strong { font-size:1.1rem; letter-spacing:.01em; }
+  header form { margin:0; }
+  main { max-width:62rem; margin:0 auto; padding:1.5rem 1.25rem 3rem; }
+  h1 { font-size:1.5rem; margin:.2rem 0 .4rem; }
+  h2 { font-size:1.1rem; margin:2rem 0 .5rem; }
+  p.lead { color:var(--muted); margin:0 0 1rem; max-width:46rem; }
+  .summary { display:flex; flex-wrap:wrap; gap:.5rem 2rem; margin:1rem 0 0; padding:0; list-style:none; }
+  .summary b { font-size:1.6rem; font-variant-numeric:tabular-nums; margin-right:.35rem; }
+  .table-wrap { overflow-x:auto; background:#fff; border:1px solid var(--line); }
+  table { width:100%; border-collapse:collapse; font-size:.92rem; font-variant-numeric:tabular-nums; }
+  th, td { text-align:left; padding:.55rem .75rem; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { font-weight:600; color:var(--muted); background:#fafbfc; }
+  tr:last-child td { border-bottom:0; }
+  tr.sev-HIGH td:first-child { box-shadow: inset 4px 0 0 var(--bad); }
+  tr.sev-MEDIUM td:first-child { box-shadow: inset 4px 0 0 var(--warn); }
+  .ok { color:var(--ok); font-weight:600; } .bad { color:var(--bad); font-weight:600; }
+  button, input[type=text], input[type=password], input[type=number] { font:inherit; }
+  button { background:var(--accent); color:#fff; border:0; padding:.45rem .9rem; border-radius:3px; cursor:pointer; }
+  button.link { background:none; border:1px solid #fff6; }
+  button:focus-visible, input:focus-visible { outline:3px solid #7ab8e0; outline-offset:2px; }
+  .panel { background:#fff; border:1px solid var(--line); padding:1.25rem 1.5rem; max-width:26rem; margin:2rem auto; }
+  .panel input { width:100%; padding:.5rem; margin:.25rem 0 .9rem; border:1px solid var(--line); border-radius:3px; }
+  .panel label { font-weight:600; }
+  .error { color:var(--bad); }
+  code { background:#eef1f4; padding:.1rem .35rem; border-radius:3px; word-break:break-all; }
+</style>
+</head>
+<body>
+<header>
+  <strong>MiniSOC</strong>
+  {% if user.is_authenticated %}
+  <form method="post" action="{% url 'logout' %}">{% csrf_token %}
+    <span>{{ user.get_username }}</span> <button class="link" type="submit">Abmelden</button>
+  </form>
+  {% endif %}
+</header>
+<main>{% block content %}{% endblock %}</main>
+</body>
+</html>
